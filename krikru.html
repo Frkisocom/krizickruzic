@@ -90,25 +90,43 @@ function mouseMoveHandler(e){
     uh.y=e.clientY-canvas.offsetTop+10;
 }
 function mouseDownHandler(){
+    if(win==2){
     for(var i = 0; i < 9; i++){
-        
         if(sve[ar].polje[i].x+100+sve[ar].i*200<uh.x&&sve[ar].polje[i].x+148+sve[ar].i*200>uh.x
         &&sve[ar].polje[i].y+100+sve[ar].j*200<uh.y&&sve[ar].polje[i].y+148+sve[ar].j*200>uh.y){
             if(sve[ar].polje[i].state!=2){}
             else{
                 sve[ar].polje[i].state=tko%2;
+                winCond();
                 tko++;
                 ar=i;
-                console.log(sve[ar].polje[i]);
             }
         }
-    }
+    }}
 }
 var ar=4;
 var tko=0;
+var win=2;
+function winCond(){
+    if (sve[ar].polje[0].state==sve[ar].polje[1].state&&sve[ar].polje[1].state==sve[ar].polje[2].state&&sve[ar].polje[2].state!=2
+    ||sve[ar].polje[3].state==sve[ar].polje[4].state&&sve[ar].polje[4].state==sve[ar].polje[5].state&&sve[ar].polje[5].state!=2
+    ||sve[ar].polje[6].state==sve[ar].polje[7].state&&sve[ar].polje[7].state==sve[ar].polje[8].state&&sve[ar].polje[8].state!=2
+    ||sve[ar].polje[0].state==sve[ar].polje[3].state&&sve[ar].polje[3].state==sve[ar].polje[6].state&&sve[ar].polje[6].state!=2
+    ||sve[ar].polje[1].state==sve[ar].polje[4].state&&sve[ar].polje[4].state==sve[ar].polje[7].state&&sve[ar].polje[7].state!=2
+    ||sve[ar].polje[2].state==sve[ar].polje[5].state&&sve[ar].polje[5].state==sve[ar].polje[8].state&&sve[ar].polje[8].state!=2
+    ||sve[ar].polje[0].state==sve[ar].polje[4].state&&sve[ar].polje[4].state==sve[ar].polje[8].state&&sve[ar].polje[8].state!=2
+    ||sve[ar].polje[2].state==sve[ar].polje[4].state&&sve[ar].polje[4].state==sve[ar].polje[6].state&&sve[ar].polje[6].state!=2)
+    {
+        win=tko%2;
+    }
+}
 function update(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle="#000";
+    if(win==0)
+    {ctx.strokeStyle="#00F";}
+    else if(win==1)
+    {ctx.strokeStyle="#F00";}
     ctx.lineWidth=5;
     ctx.beginPath();
     ctx.moveTo(275, 75);
@@ -129,10 +147,10 @@ function update(){
         else{
             ctx.strokeStyle="#000";
         }
-        drawRaslje(sve[i]);
-}
-}
+    drawRaslje(sve[i]);
 
+}
+}
 document.addEventListener("mousemove", mouseMoveHandler, false);
 document.addEventListener("click", mouseDownHandler, false);
 const interval = setInterval(update, 10);
