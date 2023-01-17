@@ -37,7 +37,7 @@ function Tile(v, c){
     this.id=c*3+v;
     this.x=v*50;
     this.y=c*50;
-    this.state=0;
+    this.state=2;
 }
 var sve=[];
 for(var i = 0; i<9; i++){
@@ -64,14 +64,14 @@ function drawRaslje(teren){
 function drawTiles(teren){
     for(var c = 0; c<3; c++){
         for(var v = 0; v<3; v++){
-            if(teren.polje[c*3+v].state==1){
+            if(teren.polje[c*3+v].state==0){
                 ctx.strokeStyle="#00F";
                 ctx.beginPath();
                 ctx.arc(v*50+25, c*50+25, 20, 0, Math.PI*2);
                 ctx.closePath();
                 ctx.stroke();
             }
-            else if(teren.polje[c*3+v].state==2){
+            else if(teren.polje[c*3+v].state==1){
                 ctx.strokeStyle="#F00";
                 ctx.beginPath();
                 ctx.moveTo(v*50, c*50);
@@ -87,16 +87,17 @@ function drawTiles(teren){
 var uh = {x:0 , y: 0};
 function mouseMoveHandler(e){
     uh.x=e.clientX-canvas.offsetLeft;
-    uh.y=e.clientY-canvas.offsetTop;
+    uh.y=e.clientY-canvas.offsetTop+10;
 }
 function mouseDownHandler(){
     for(var i = 0; i < 9; i++){
         
         if(sve[ar].polje[i].x+100+sve[ar].i*200<uh.x&&sve[ar].polje[i].x+148+sve[ar].i*200>uh.x
         &&sve[ar].polje[i].y+100+sve[ar].j*200<uh.y&&sve[ar].polje[i].y+148+sve[ar].j*200>uh.y){
-            if(sve[ar].polje[i].state!=0){}
+            if(sve[ar].polje[i].state!=2){}
             else{
-                sve[ar].polje[i].state=1;
+                sve[ar].polje[i].state=tko%2;
+                tko++;
                 ar=i;
                 console.log(sve[ar].polje[i]);
             }
@@ -104,17 +105,7 @@ function mouseDownHandler(){
     }
 }
 var ar=4;
-function rightDownHandler(){
-    event.preventDefault();
-    for(var i = 0; i < 9; i++){
-        if(sve[ar].polje[i].x+100+sve[ar].i*200<uh.x&&sve[ar].polje[i].x+148+sve[ar].i*200>uh.x
-        &&sve[ar].polje[i].y+100+sve[ar].j*200<uh.y&&sve[ar].polje[i].y+148+sve[ar].j*200>uh.y){
-            sve[ar].polje[i].state=2;
-            ar=i;
-            console.log(sve[ar].polje[i]);
-        }
-    }
-}
+var tko=0;
 function update(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle="#000";
@@ -144,8 +135,6 @@ function update(){
 
 document.addEventListener("mousemove", mouseMoveHandler, false);
 document.addEventListener("click", mouseDownHandler, false);
-document.addEventListener("contextmenu", rightDownHandler, false);
-
 const interval = setInterval(update, 10);
 </script>
 </body>
