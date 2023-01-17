@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<head>
+    <title>Stranica</title>
+    <style>
+    div{
+        display: flex;
+    }
+    canvas{
+        margin:0 auto;
+    }
+    body{
+        background-color: #54dd32;
+    }
+    </style>
+</head>
+<body>
+    <div>
+        <canvas id="myCanvas" width="750" height ="750" style="background-color:#54dd32"></canvas>
+    </div>
+<script>
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+function Raslje (id){
+    this.id=id;
+    this.j=Math.floor(id/3);
+    this.i=id%3;
+    this.polje=[];
+    var ctr=0;
+    for(var c = 0; c<3; c++){
+        for(var v = 0; v<3; v++){
+        this.polje[ctr]=new Tile(v, c);
+        ctr++;
+    }
+    }
+}
+function Tile(v, c){
+    this.id=c*3+v;
+    this.x=v*50;
+    this.y=c*50;
+    this.state=0;
+}
+var sve=[];
+for(var i = 0; i<9; i++){
+    sve[i]=new Raslje(i);
+}
+function drawRaslje(teren){
+    ctx.save();
+    ctx.translate(100, 100);
+    ctx.translate(teren.i*200, teren.j*200);
+    ctx.beginPath();
+    ctx.moveTo(50, 0);
+    ctx.lineTo(50, 150);
+    ctx.moveTo(100, 0);
+    ctx.lineTo(100, 150);
+    ctx.moveTo(0, 50);
+    ctx.lineTo(150, 50);
+    ctx.moveTo(0, 100);
+    ctx.lineTo(150, 100);
+    ctx.closePath();
+    ctx.stroke();
+    drawTiles(teren);
+    ctx.restore();
+}
+function drawTiles(teren){
+    for(var c = 0; c<3; c++){
+        for(var v = 0; v<3; v++){
+            if(teren.polje[c*3+v].state==1){
+                ctx.strokeStyle="#00F";
+                ctx.beginPath();
+                ctx.arc(v*50+25, c*50+25, 20, 0, Math.PI*2);
+                ctx.closePath();
+                ctx.stroke();
+            }
+            else if(teren.polje[c*3+v].state==2){
+                ctx.strokeStyle="#F00";
+                ctx.beginPath();
+                ctx.moveTo(v*50, c*50);
+                ctx.lineTo(v*50+50, c*50+50);
+                ctx.moveTo(v*50+50, c*50);
+                ctx.lineTo(v*50, c*50+50);
+                ctx.closePath();
+                ctx.stroke();
+            }
+    }
+    }
+}
+var uh = {x:0 , y: 0};
+function mouseMoveHandler(e){
+    uh.x=e.clientX-canvas.offsetLeft;
+    uh.y=e.clientY-canvas.offsetTop;
+}
+function mouseDownHandler(){
+    for(var i = 0; i < 9; i++){
+        
+        if(sve[ar].polje[i].x+100+sve[ar].i*200<uh.x&&sve[ar].polje[i].x+148+sve[ar].i*200>uh.x
+        &&sve[ar].polje[i].y+100+sve[ar].j*200<uh.y&&sve[ar].polje[i].y+148+sve[ar].j*200>uh.y){
+            if(sve[ar].polje[i].state!=0){}
+            else{
+                sve[ar].polje[i].state=1;
+                ar=i;
+                console.log(sve[ar].polje[i]);
+            }
+        }
+    }
+}
+var ar=4;
+function rightDownHandler(){
+    event.preventDefault();
+    for(var i = 0; i < 9; i++){
+        if(sve[ar].polje[i].x+100+sve[ar].i*200<uh.x&&sve[ar].polje[i].x+148+sve[ar].i*200>uh.x
+        &&sve[ar].polje[i].y+100+sve[ar].j*200<uh.y&&sve[ar].polje[i].y+148+sve[ar].j*200>uh.y){
+            sve[ar].polje[i].state=2;
+            ar=i;
+            console.log(sve[ar].polje[i]);
+        }
+    }
+}
+function update(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle="#000";
+    ctx.lineWidth=5;
+    ctx.beginPath();
+    ctx.moveTo(275, 75);
+    ctx.lineTo(275, 675);
+    ctx.moveTo(475, 75);
+    ctx.lineTo(475, 675);
+    ctx.moveTo(75, 275);
+    ctx.lineTo(675, 275);
+    ctx.moveTo(75, 475);
+    ctx.lineTo(675, 475);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.lineWidth=3;
+    for(var i = 0; i<9; i++){
+        if(ar==i){
+            ctx.strokeStyle="#FFF";
+        }
+        else{
+            ctx.strokeStyle="#000";
+        }
+        drawRaslje(sve[i]);
+}
+}
+
+document.addEventListener("mousemove", mouseMoveHandler, false);
+document.addEventListener("click", mouseDownHandler, false);
+document.addEventListener("contextmenu", rightDownHandler, false);
+
+const interval = setInterval(update, 10);
+</script>
+</body>
+</html>
